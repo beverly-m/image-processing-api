@@ -1,55 +1,64 @@
-import {promises as fsPromises, existsSync} from "fs";
-import { ParsedUrlQuery } from "querystring";
-import sharp from "sharp";
-import path from "path";
-    
+import { promises as fsPromises, existsSync } from 'fs';
+import { ParsedUrlQuery } from 'querystring';
+import sharp from 'sharp';
+import path from 'path';
+
+// function for resizing images
 const processImage = async (queryObject: ParsedUrlQuery): Promise<object> => {
-        const image: string = ((queryObject.image) as unknown) as string; 
-        const width: string = ((queryObject.width) as unknown) as string; 
-        const height: string = ((queryObject.height) as unknown) as string; 
+    //retrieve data (query params) from request url
+    const image: string = queryObject.image as unknown as string;
+    const width: string = queryObject.width as unknown as string;
+    const height: string = queryObject.height as unknown as string;
 
-        const imagePath = `./src/assets/full/${image}.jpg`
+    //define image path to check if the image exists in the file system
+    const imagePath = `./src/assets/full/${image}.jpg`;
 
-        // if(!existsSync(`./src/assets/full/${queryObject.image}.jpg`)) return {};
-        
-        if(!existsSync(imagePath)) return {};
+    //return empty object if image does not exist
+    if (!existsSync(imagePath)) return {};
 
-        console.log("Image processing...")
+    console.log('Image processing...');
 
-        const thumbDirPath = "./src/assets/thumb/"
+    //define thumb path to check if the thumb directory exists in the file system
+    const thumbDirPath = './src/assets/thumb/';
 
-        // if (!existsSync("./src/assets/thumb/")){
-        //     await fsPromises.mkdir("./src/assets/thumb/");
-        // }
+    // create the thumb directory if it does not exist
+    if (!existsSync(thumbDirPath)) {
+        await fsPromises.mkdir(thumbDirPath);
+    }
 
-        if (!existsSync(thumbDirPath)){
-            await fsPromises.mkdir(thumbDirPath);
-        }
+    // define unmanipulated image path
+    const orgImagePath: string = path.join(
+        __dirname,
+        '..',
+        '..',
+        'src',
+        'assets',
+        'full',
+        `${image}.jpg`
+    );
 
-        const orgImagePath: string = path.join(__dirname, "..", ".." , "src" ,"assets", "full", `${image}.jpg`)
-        const thumbImagePath: string = path.join(__dirname, "..", ".." , "src" ,"assets", "thumb", `${image}_thumb(${width}x${height}).jpg`)
+    // define thumbnail image path
+    const thumbImagePath: string = path.join(
+        __dirname,
+        '..',
+        '..',
+        'src',
+        'assets',
+        'thumb',
+        `${image}_thumb(${width}x${height}).jpg`
+    );
 
-        const data = await sharp(orgImagePath)
-        .resize(
-            parseInt(width), 
-            parseInt(height),
-            {fit: sharp.fit.cover})
+    // use defined paths to manipulate original image and save resulting image to the thumb directory
+    const data = await sharp(orgImagePath)
+        .resize(parseInt(width), parseInt(height), { fit: sharp.fit.cover })
         .toFile(thumbImagePath)
-        .then(data => {
-            console.log(JSON.stringify(data)) 
-            return data});
+        .then((data) => {
+            console.log(JSON.stringify(data));
+            return data;
+        });
 
-        // const data = await sharp(`C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/full/${queryObject.image}.jpg`)
-        // .resize(
-        //     parseInt((queryObject.width as unknown) as string), 
-        //     parseInt((queryObject.height as unknown) as string),
-        //     {fit: sharp.fit.cover})
-        // .toFile(`C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`)
-        // .then(data => {
-        //     console.log(JSON.stringify(data)) 
-        //     return data});
-
-        return data;
-}
+    // return object with thumbnail image data
+    return data;
+};
 
 export default processImage;

@@ -1,12 +1,14 @@
-import express from "express";
-import images from "./api/images";
+import express from 'express';
+import images from './api/images';
 
-const routes = express.Router()
+const routes = express.Router();
 
-routes.get("/", (req, res) => {
-    res.send("Hello, Welcome to Image Processing API!")
-})
+// GET /api endpoint
+routes.get('/', (req, res) => {
+    res.send('Hello, Welcome to Image Processing API!');
+});
 
-routes.use("/images", images);
+// add images routes as middleware
+routes.use('/images', images);
 
 export default routes;
