@@ -30,5 +30,15 @@ describe('1. Test /api/images endpoint responses', () => {
             const res = await req.get('/api/images?width=400&height=200');
             expect(res.text).toEqual("Invalid URL parameters sent");
         })
+
+        it('1.2.3. Sends error status code for image name that does not exist', async () => {
+            const res = await req.get('/api/images?image=checkvalidity&width=400&height=200');
+            expect(res.status).toBe(404);
+        })
+
+        it('1.2.4. Sends error message for image name that does not exist', async () => {
+            const res = await req.get('/api/images?image=checkvalidity&width=400&height=200');
+            expect(res.text).toEqual("Image file name does not exist");
+        })
     })
 })

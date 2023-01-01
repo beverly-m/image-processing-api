@@ -41,37 +41,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var processor_1 = __importDefault(require("../../utililties/processor"));
 var fs_1 = require("fs");
-describe("Test image resizing utility", function () {
-    it("Gets new resized image data", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
-                case 1:
-                    data = _a.sent();
-                    expect(data).toEqual({
-                        format: 'jpeg',
-                        width: 200,
-                        height: 400,
-                        channels: 3,
-                        premultiplied: false,
-                        size: 11905
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Creates resized image in thumb folder", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var created;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
-                case 1:
-                    _a.sent();
-                    created = (0, fs_1.existsSync)("./src/assets/thumb/fjord_thumb(200x400).jpg");
-                    expect(created).toBeTrue();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+describe("2. Test image resizing utility", function () {
+    describe('2.1. Test successful retrieval of image', function () {
+        afterEach(function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fs_1.promises.rm("./src/assets/thumb/fjord_thumb(200x400).jpg")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it("2.1.1. Gets new resized image data", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
+                    case 1:
+                        data = _a.sent();
+                        expect(data).toEqual({
+                            format: 'jpeg',
+                            width: 200,
+                            height: 400,
+                            channels: 3,
+                            premultiplied: false,
+                            size: 11905
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it("2.1.2. Creates resized image in thumb folder", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var created;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
+                    case 1:
+                        _a.sent();
+                        created = (0, fs_1.existsSync)("./src/assets/thumb/fjord_thumb(200x400).jpg");
+                        expect(created).toBeTrue();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('2.2. Test image retrieval failure', function () {
+        it("2.2.1 Sends empty image data object when image doesn't exist", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "testvalidity", width: "200", height: "400" })];
+                    case 1:
+                        data = _a.sent();
+                        expect(data).toEqual({});
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
 });

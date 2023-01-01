@@ -1,32 +1,8 @@
-// import express from "express";
 import {promises as fsPromises, existsSync} from "fs";
 import { ParsedUrlQuery } from "querystring";
 import sharp from "sharp";
-
-// type imgData = {
-//         format: string;
-//         width: number;
-//         height: number;
-//         channels: number;
-//         premultiplied: boolean;
-//         size: number
-// }
-// import url from "url";
-
-// const processor = express.Router()
-// const thumbDir = async (): Promise<void> => {
-
-//     if (!existsSync("./src/assets/thumb/")){
-//         await fsPromises.mkdir("./src/assets/thumb/");
-//     }
     
-// }
-
-// processor.get("/", (req, res, next) => {
-    
-//     const queryObject = url.parse(req.url, true).query 
-    
-    const processImage = async (queryObject: ParsedUrlQuery): Promise<object> => {
+const processImage = async (queryObject: ParsedUrlQuery): Promise<object> => {
         
         if(!existsSync(`./src/assets/full/${queryObject.image}.jpg`)) return {};
         
@@ -47,12 +23,6 @@ import sharp from "sharp";
             return data});
 
         return data;
-    }
-
-//     processImage();
-
-//     console.log(queryObject);
-//     next();
-// })
+}
 
 export default processImage;

@@ -94,5 +94,29 @@ describe('1. Test /api/images endpoint responses', function () {
                 }
             });
         }); });
+        it('1.2.3. Sends error status code for image name that does not exist', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req.get('/api/images?image=checkvalidity&width=400&height=200')];
+                    case 1:
+                        res = _a.sent();
+                        expect(res.status).toBe(404);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('1.2.4. Sends error message for image name that does not exist', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req.get('/api/images?image=checkvalidity&width=400&height=200')];
+                    case 1:
+                        res = _a.sent();
+                        expect(res.text).toEqual("Image file name does not exist");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
     });
 });

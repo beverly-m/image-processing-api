@@ -46,28 +46,26 @@ var processor_1 = __importDefault(require("../../utililties/processor"));
 // import {promises as fsPromises} from "fs";
 var images = express_1.default.Router();
 images.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryObject;
+    var queryObject, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 queryObject = url_1.default.parse(req.url, true).query;
                 if (!(queryObject.width === undefined || queryObject.height === undefined || queryObject.image === undefined)) return [3 /*break*/, 1];
                 res.status(400).send("Invalid URL parameters sent");
-                return [3 /*break*/, 4];
+                return [3 /*break*/, 5];
             case 1: return [4 /*yield*/, (0, processor_1.default)(queryObject)];
             case 2:
-                _a.sent();
-                // while(!existsSync(`./src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`)) {
-                //     setTimeout(() => console.log("Image still processing..."), 1000)
-                // }
+                result = _a.sent();
+                if (!!(JSON.stringify(result) == "{}")) return [3 /*break*/, 4];
                 return [4 /*yield*/, res.status(200).sendFile("C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/".concat(queryObject.image, "_thumb(").concat(queryObject.width, "x").concat(queryObject.height, ").jpg"))];
             case 3:
-                // while(!existsSync(`./src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`)) {
-                //     setTimeout(() => console.log("Image still processing..."), 1000)
-                // }
                 _a.sent();
-                _a.label = 4;
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 4:
+                res.status(404).send("Image file name does not exist");
+                _a.label = 5;
+            case 5: return [2 /*return*/];
         }
     });
 }); });
