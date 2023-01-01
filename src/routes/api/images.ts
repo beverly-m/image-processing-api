@@ -3,6 +3,9 @@ import url from "url";
 import processImage from "../../utilities/processor";
 import path from "path";
 import apicache from "apicache";
+import { hrtime } from "node:process";
+import convertHrtime from "convert-hrtime";
+import { existsSync } from "fs";
 
 const images = express.Router()
 
@@ -13,6 +16,8 @@ const status200 = (req: Request, res: Response) => res.status === 200
 const cacheStatus200 = cache('60 minutes', status200)
 
 images.get("/", cacheStatus200 , async (req, res) => {
+    const start: [number, number] = hrtime();
+
     const queryObject = url.parse(req.url, true).query 
 
     const image: string = ((queryObject.image) as unknown) as string; 
@@ -23,20 +28,31 @@ images.get("/", cacheStatus200 , async (req, res) => {
         res.status(400).send("Invalid URL parameters sent");
     }
     else {
-        const result = await processImage(queryObject);
 
-        if (!(JSON.stringify(result) == "{}")) {
+        const thumbImagePath: string = path.join(__dirname, "..", ".." , "..", "src" ,"assets", "thumb", `${image}_thumb(${width}x${height}).jpg`)
 
-            const thumbImagePath: string = path.join(__dirname, "..", ".." , "..", "src" ,"assets", "thumb", `${image}_thumb(${width}x${height}).jpg`)
+        const imagePath = `./src/assets/thumb/${image}_thumb(${width}x${height}).jpg`
 
+        if (existsSync(imagePath)){
             await res.status(200).sendFile(thumbImagePath);
-
-            // await res.status(200).sendFile(`C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`);
         } else {
-            res.status(404).send("Image file name does not exist")    
-        }         
+
+            const result = await processImage(queryObject);
+
+            if (!(JSON.stringify(result) == "{}")) {
+
+                await res.status(200).sendFile(thumbImagePath);
+
+            } else {
+                res.status(404).send("Image file name does not exist")    
+            } 
+        }        
     }
 
+    const processTime: [number, number] = hrtime(start);
+    const processTimeMs = convertHrtime(processTime).milliseconds;
+    
+    console.log(`Image processing took ${processTimeMs} milliseconds`)
 })
 
 export default images;

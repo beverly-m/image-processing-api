@@ -43,6 +43,19 @@ var processor_1 = __importDefault(require("../../utilities/processor"));
 var fs_1 = require("fs");
 describe("2. Test image resizing utility", function () {
     describe('2.1. Test successful retrieval of image', function () {
+        beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(0, fs_1.existsSync)("./src/assets/thumb/fjord_thumb(200x400).jpg")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, fs_1.promises.rm("./src/assets/thumb/fjord_thumb(200x400).jpg")];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        }); });
         afterEach(function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {

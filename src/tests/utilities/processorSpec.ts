@@ -5,6 +5,12 @@ describe("2. Test image resizing utility", () => {
 
     describe('2.1. Test successful retrieval of image', () => { 
 
+        beforeAll(async () => {
+            if (existsSync("./src/assets/thumb/fjord_thumb(200x400).jpg")) {
+                await fsPromises.rm("./src/assets/thumb/fjord_thumb(200x400).jpg")
+            }
+        })
+
         afterEach(async () => {
             await fsPromises.rm("./src/assets/thumb/fjord_thumb(200x400).jpg")
         })

@@ -44,35 +44,50 @@ var url_1 = __importDefault(require("url"));
 var processor_1 = __importDefault(require("../../utilities/processor"));
 var path_1 = __importDefault(require("path"));
 var apicache_1 = __importDefault(require("apicache"));
+var node_process_1 = require("node:process");
+var convert_hrtime_1 = __importDefault(require("convert-hrtime"));
+var fs_1 = require("fs");
 var images = express_1.default.Router();
 var cache = apicache_1.default.middleware;
 var status200 = function (req, res) { return res.status === 200; };
 var cacheStatus200 = cache('60 minutes', status200);
 images.get("/", cacheStatus200, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryObject, image, width, height, result, thumbImagePath;
+    var start, queryObject, image, width, height, thumbImagePath, imagePath, result, processTime, processTimeMs;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                start = (0, node_process_1.hrtime)();
                 queryObject = url_1.default.parse(req.url, true).query;
                 image = (queryObject.image);
                 width = (queryObject.width);
                 height = (queryObject.height);
                 if (!(width === undefined || height === undefined || image === undefined)) return [3 /*break*/, 1];
                 res.status(400).send("Invalid URL parameters sent");
-                return [3 /*break*/, 5];
-            case 1: return [4 /*yield*/, (0, processor_1.default)(queryObject)];
-            case 2:
-                result = _a.sent();
-                if (!!(JSON.stringify(result) == "{}")) return [3 /*break*/, 4];
+                return [3 /*break*/, 7];
+            case 1:
                 thumbImagePath = path_1.default.join(__dirname, "..", "..", "..", "src", "assets", "thumb", "".concat(image, "_thumb(").concat(width, "x").concat(height, ").jpg"));
+                imagePath = "./src/assets/thumb/".concat(image, "_thumb(").concat(width, "x").concat(height, ").jpg");
+                if (!(0, fs_1.existsSync)(imagePath)) return [3 /*break*/, 3];
                 return [4 /*yield*/, res.status(200).sendFile(thumbImagePath)];
-            case 3:
+            case 2:
                 _a.sent();
-                return [3 /*break*/, 5];
+                return [3 /*break*/, 7];
+            case 3: return [4 /*yield*/, (0, processor_1.default)(queryObject)];
             case 4:
+                result = _a.sent();
+                if (!!(JSON.stringify(result) == "{}")) return [3 /*break*/, 6];
+                return [4 /*yield*/, res.status(200).sendFile(thumbImagePath)];
+            case 5:
+                _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
                 res.status(404).send("Image file name does not exist");
-                _a.label = 5;
-            case 5: return [2 /*return*/];
+                _a.label = 7;
+            case 7:
+                processTime = (0, node_process_1.hrtime)(start);
+                processTimeMs = (0, convert_hrtime_1.default)(processTime).milliseconds;
+                console.log("Image processing took ".concat(processTimeMs, " milliseconds"));
+                return [2 /*return*/];
         }
     });
 }); });
