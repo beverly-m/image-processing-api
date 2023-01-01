@@ -39,60 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var supertest_1 = __importDefault(require("supertest"));
-var index_1 = __importDefault(require("../index"));
-var req = (0, supertest_1.default)(index_1.default);
-describe('1. Test /api/images endpoint responses', function () {
-    describe('1.1. Test successful api requests', function () {
-        it('1.1.1. Gets api endpoint', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(200);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.1.2. Sends image file', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.type).toBe("image/jpeg");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
-    describe('1.2. Test failed api request', function () {
-        it('1.2.1. Sends error status code for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(400);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.2.2. Sends error message for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.text).toEqual("Invalid URL parameters sent");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
+var processor_1 = __importDefault(require("../../utililties/processor"));
+var fs_1 = require("fs");
+describe("Test image resizing utility", function () {
+    it("Gets new resized image data", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
+                case 1:
+                    data = _a.sent();
+                    expect(data).toEqual({
+                        format: 'jpeg',
+                        width: 200,
+                        height: 400,
+                        channels: 3,
+                        premultiplied: false,
+                        size: 11905
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Creates resized image in thumb folder", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var created;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, processor_1.default)({ image: "fjord", width: "200", height: "400" })];
+                case 1:
+                    _a.sent();
+                    created = (0, fs_1.existsSync)("./src/assets/thumb/fjord_thumb(200x400).jpg");
+                    expect(created).toBeTrue();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 });

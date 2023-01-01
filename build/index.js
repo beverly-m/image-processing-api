@@ -1,9 +1,19 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var test = function (text) {
-    console.log(text);
-    return text;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var phrase = "Hello, World!";
-test(phrase);
-exports.default = test;
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = __importDefault(require("express"));
+var index_1 = __importDefault(require("./routes/index"));
+var app = (0, express_1.default)();
+var port = 3000;
+app.use("/api", index_1.default);
+try {
+    app.listen(port, function () {
+        console.log("Server listening on localhost:".concat(port));
+    });
+}
+catch (error) {
+    console.log(error);
+}
+exports.default = app;

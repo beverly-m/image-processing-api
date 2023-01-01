@@ -39,60 +39,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var supertest_1 = __importDefault(require("supertest"));
-var index_1 = __importDefault(require("../index"));
-var req = (0, supertest_1.default)(index_1.default);
-describe('1. Test /api/images endpoint responses', function () {
-    describe('1.1. Test successful api requests', function () {
-        it('1.1.1. Gets api endpoint', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(200);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.1.2. Sends image file', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.type).toBe("image/jpeg");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
+// import express from "express";
+var fs_1 = require("fs");
+var sharp_1 = __importDefault(require("sharp"));
+// type imgData = {
+//         format: string;
+//         width: number;
+//         height: number;
+//         channels: number;
+//         premultiplied: boolean;
+//         size: number
+// }
+// import url from "url";
+// const processor = express.Router()
+// const thumbDir = async (): Promise<void> => {
+//     if (!existsSync("./src/assets/thumb/")){
+//         await fsPromises.mkdir("./src/assets/thumb/");
+//     }
+// }
+// processor.get("/", (req, res, next) => {
+//     const queryObject = url.parse(req.url, true).query 
+var processImage = function (queryObject) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!(0, fs_1.existsSync)("./src/assets/full/".concat(queryObject.image, ".jpg")))
+                    return [2 /*return*/, {}];
+                console.log("Image processing...");
+                if (!!(0, fs_1.existsSync)("./src/assets/thumb/")) return [3 /*break*/, 2];
+                return [4 /*yield*/, fs_1.promises.mkdir("./src/assets/thumb/")];
+            case 1:
+                _a.sent();
+                _a.label = 2;
+            case 2: return [4 /*yield*/, (0, sharp_1.default)("C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/full/".concat(queryObject.image, ".jpg"))
+                    .resize(parseInt(queryObject.width), parseInt(queryObject.height), { fit: sharp_1.default.fit.cover })
+                    .toFile("C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/".concat(queryObject.image, "_thumb(").concat(queryObject.width, "x").concat(queryObject.height, ").jpg"))
+                    .then(function (data) {
+                    console.log(JSON.stringify(data));
+                    return data;
+                })];
+            case 3:
+                data = _a.sent();
+                return [2 /*return*/, data];
+        }
     });
-    describe('1.2. Test failed api request', function () {
-        it('1.2.1. Sends error status code for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(400);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.2.2. Sends error message for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.text).toEqual("Invalid URL parameters sent");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
-});
+}); };
+//     processImage();
+//     console.log(queryObject);
+//     next();
+// })
+exports.default = processImage;

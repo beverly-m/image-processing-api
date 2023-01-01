@@ -39,60 +39,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var supertest_1 = __importDefault(require("supertest"));
-var index_1 = __importDefault(require("../index"));
-var req = (0, supertest_1.default)(index_1.default);
-describe('1. Test /api/images endpoint responses', function () {
-    describe('1.1. Test successful api requests', function () {
-        it('1.1.1. Gets api endpoint', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(200);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.1.2. Sends image file', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?image=fjord&width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.type).toBe("image/jpeg");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
+var express_1 = __importDefault(require("express"));
+var url_1 = __importDefault(require("url"));
+var processor_1 = __importDefault(require("../../utililties/processor"));
+// import {existsSync} from "fs";
+// import {promises as fsPromises} from "fs";
+var images = express_1.default.Router();
+images.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryObject;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                queryObject = url_1.default.parse(req.url, true).query;
+                if (!(queryObject.width === undefined || queryObject.height === undefined || queryObject.image === undefined)) return [3 /*break*/, 1];
+                res.status(400).send("Invalid URL parameters sent");
+                return [3 /*break*/, 4];
+            case 1: return [4 /*yield*/, (0, processor_1.default)(queryObject)];
+            case 2:
+                _a.sent();
+                // while(!existsSync(`./src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`)) {
+                //     setTimeout(() => console.log("Image still processing..."), 1000)
+                // }
+                return [4 /*yield*/, res.status(200).sendFile("C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/".concat(queryObject.image, "_thumb(").concat(queryObject.width, "x").concat(queryObject.height, ").jpg"))];
+            case 3:
+                // while(!existsSync(`./src/assets/thumb/${queryObject.image}_thumb(${queryObject.width}x${queryObject.height}).jpg`)) {
+                //     setTimeout(() => console.log("Image still processing..."), 1000)
+                // }
+                _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/];
+        }
     });
-    describe('1.2. Test failed api request', function () {
-        it('1.2.1. Sends error status code for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.status).toBe(400);
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('1.2.2. Sends error message for missing or invalid query parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, req.get('/api/images?width=400&height=200')];
-                    case 1:
-                        res = _a.sent();
-                        expect(res.text).toEqual("Invalid URL parameters sent");
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
-});
+}); });
+exports.default = images;
