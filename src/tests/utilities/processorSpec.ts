@@ -1,4 +1,4 @@
-import processImage from "../../utililties/processor"
+import processImage from "../../utilities/processor"
 import {promises as fsPromises, existsSync} from "fs";
 
 describe("2. Test image resizing utility", () => {

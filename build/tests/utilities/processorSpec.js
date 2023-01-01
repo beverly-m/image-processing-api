@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var processor_1 = __importDefault(require("../../utililties/processor"));
+var processor_1 = __importDefault(require("../../utilities/processor"));
 var fs_1 = require("fs");
 describe("2. Test image resizing utility", function () {
     describe('2.1. Test successful retrieval of image', function () {

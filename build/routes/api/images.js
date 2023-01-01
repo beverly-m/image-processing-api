@@ -41,24 +41,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var url_1 = __importDefault(require("url"));
-var processor_1 = __importDefault(require("../../utililties/processor"));
-// import {existsSync} from "fs";
-// import {promises as fsPromises} from "fs";
+var processor_1 = __importDefault(require("../../utilities/processor"));
+var path_1 = __importDefault(require("path"));
+var apicache_1 = __importDefault(require("apicache"));
 var images = express_1.default.Router();
-images.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryObject, result;
+var cache = apicache_1.default.middleware;
+var status200 = function (req, res) { return res.status === 200; };
+var cacheStatus200 = cache('60 minutes', status200);
+images.get("/", cacheStatus200, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryObject, image, width, height, result, thumbImagePath;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 queryObject = url_1.default.parse(req.url, true).query;
-                if (!(queryObject.width === undefined || queryObject.height === undefined || queryObject.image === undefined)) return [3 /*break*/, 1];
+                image = (queryObject.image);
+                width = (queryObject.width);
+                height = (queryObject.height);
+                if (!(width === undefined || height === undefined || image === undefined)) return [3 /*break*/, 1];
                 res.status(400).send("Invalid URL parameters sent");
                 return [3 /*break*/, 5];
             case 1: return [4 /*yield*/, (0, processor_1.default)(queryObject)];
             case 2:
                 result = _a.sent();
                 if (!!(JSON.stringify(result) == "{}")) return [3 /*break*/, 4];
-                return [4 /*yield*/, res.status(200).sendFile("C:/Users/26377/WebDev/Udacity Projects/ImageProcessingAPI/image-processing-api/src/assets/thumb/".concat(queryObject.image, "_thumb(").concat(queryObject.width, "x").concat(queryObject.height, ").jpg"))];
+                thumbImagePath = path_1.default.join(__dirname, "..", "..", "..", "src", "assets", "thumb", "".concat(image, "_thumb(").concat(width, "x").concat(height, ").jpg"));
+                return [4 /*yield*/, res.status(200).sendFile(thumbImagePath)];
             case 3:
                 _a.sent();
                 return [3 /*break*/, 5];
