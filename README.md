@@ -42,6 +42,14 @@ Example response:
 
 ![image](https://user-images.githubusercontent.com/71017261/210187307-dde3e553-acaa-4d63-933e-2f5a91f5e804.png)
 
+This will create a thumb folder in the assets directory (image-processing-api/src/assets/thumb) where the resized image is stored with the format
+
+```
+${image_name}_thumb(${width}x{height})
+```
+
+![image](https://user-images.githubusercontent.com/71017261/210187697-38aa41aa-498b-46b8-a74a-33b9a2513b14.png)
+
 
 ## Build application
 ```
