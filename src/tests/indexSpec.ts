@@ -29,7 +29,7 @@ describe('1. Test /api/images endpoint responses', () => {
 
         it('1.2.2. Sends error message for missing or invalid query parameters', async () => {
             const res = await req.get('/api/images?width=400&height=200');
-            expect(res.text).toEqual('Invalid URL parameters sent');
+            expect(res.text).toEqual('Incomplete URL parameters sent');
         });
 
         it('1.2.3. Sends error status code for image name that does not exist', async () => {

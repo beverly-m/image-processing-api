@@ -6,6 +6,7 @@ import apicache from 'apicache';
 import { hrtime } from 'node:process';
 import convertHrtime from 'convert-hrtime';
 import { existsSync } from 'fs';
+import checkValidity from '../../utilities/checkValidity';
 
 const images = express.Router();
 
@@ -32,7 +33,12 @@ images.get('/', cacheStatus200, async (req, res) => {
     //check if all parameters where provided
     if (width === undefined || height === undefined || image === undefined) {
         //send error message if not all were provided
-        res.status(400).send('Invalid URL parameters sent');
+        res.status(400).send('Incomplete URL parameters sent');
+    } else if (!checkValidity(width) || !checkValidity(height)) {
+        //send error message if width or height if NaN or a value less than or equal to 0
+        res.status(400).send(
+            'The width and height should be a number, a non-zero value and a positive integer (not a decimal)'
+        );
     } else {
         // define thumbnail image path (absolute)
         const thumbImagePath: string = path.join(
